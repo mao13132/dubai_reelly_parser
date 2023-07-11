@@ -1,4 +1,5 @@
 from src.auth_reely import AuthRelly
+from src.job_filter import JobFilter
 from src.load_page import LoadPage
 
 
@@ -23,6 +24,12 @@ class SourceParse:
             return False
 
         print(f'Вход успешно выполнен. Вход авторизирован')
+
+        zast = 'Emaar'
+        res_set_filter = JobFilter(self.driver).set_filter(zast)
+
+        if not res_set_filter:
+            return False
 
         print()
         return True

@@ -12,8 +12,6 @@ class AuthRelly:
         self.driver = driver
         self.source_name = 'reelly'
 
-
-
     def write_login(self):
         try:
             self.driver.find_element(by=By.XPATH, value=f"//*[contains(@name, 'email')]").send_keys(LOGIN)
@@ -39,7 +37,8 @@ class AuthRelly:
 
     def check_password(self):
         try:
-            password_ = self.driver.find_element(by=By.XPATH, value=f"//*[contains(@name, 'assword')]").get_attribute('value')
+            password_ = self.driver.find_element(by=By.XPATH, value=f"//*[contains(@name, 'assword')]").get_attribute(
+                'value')
         except Exception as es:
             print(f'Не смог проверить email "{es}"')
             return False
@@ -49,7 +48,6 @@ class AuthRelly:
     def loop_write_email(self):
         count = 0
         while True:
-            count += 1
             if count > 5:
                 print(f'Не смог авторизоваться вписать логин. Завершаюсь')
                 return False
@@ -58,13 +56,13 @@ class AuthRelly:
 
             if res_email != LOGIN:
                 self.write_login()
+                count += 1
             else:
                 return True
 
     def loop_write_password(self):
         count = 0
         while True:
-            count += 1
             if count > 5:
                 print(f'Не смог авторизоваться вписать пароль. Завершаюсь')
                 return False
@@ -73,6 +71,8 @@ class AuthRelly:
 
             if res_password != PASSWORD:
                 self.write_password()
+
+                count += 1
             else:
                 return True
 
@@ -93,7 +93,6 @@ class AuthRelly:
         except:
             return False
 
-
     def start_auth(self):
         check_load = self.check_load_page()
 
@@ -107,7 +106,7 @@ class AuthRelly:
 
         res_write_password = self.loop_write_password()
 
-        if not  res_write_password:
+        if not res_write_password:
             return False
 
         res_click = self.click_login()
@@ -150,7 +149,6 @@ class AuthRelly:
             if not res_auth:
                 print(f'Вход выполнен, требуется авторизация. Начинаю...')
                 res_auth = self.start_auth()
-                # res_auth = AuthRelly(self.driver).start_auth()
 
                 time.sleep(3)
 
