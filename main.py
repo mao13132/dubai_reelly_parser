@@ -1,13 +1,14 @@
 from datetime import datetime
 
 from browser.createbrowser import CreatBrowser
+from src.source_parse import SourceParse
 
 
 def main():
     browser_core = CreatBrowser()
 
     try:
-
+        data_good = SourceParse(browser_core.driver).start_pars()
         print()
 
     except BaseException as es:
