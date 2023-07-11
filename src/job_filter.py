@@ -4,8 +4,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from src.settings import LOGIN, PASSWORD
-
 
 class JobFilter:
     def __init__(self, driver):
@@ -86,10 +84,10 @@ class JobFilter:
     def click_apply_filter(self):
         try:
             self.driver.find_element(by=By.XPATH,
-                                             value=f"//*[contains(@w-el-class, 'filters-block hidden')]"
-                                                   f"//*[contains(@wized, 'applyFilterButton')]").click()
+                                     value=f"//*[contains(@w-el-class, 'filters-block hidden')]"
+                                           f"//*[contains(@wized, 'applyFilterButton')]").click()
         except Exception as es:
-            print(f'Не смог click_apply_filter "{es}"')
+            # print(f'Не смог click_apply_filter "{es}"')
             return False
 
         return True
@@ -130,7 +128,6 @@ class JobFilter:
             else:
                 return True
 
-
     def set_filter(self, zast):
         res = self.check_load_filter(f"//*[contains(@name, 'Search')]//a[contains(@wized, 'openFiltersWindow')]")
 
@@ -143,7 +140,6 @@ class JobFilter:
         if not get_filter:
             return False
 
-
         res_set_zastr = self.loop_insert_zastro(zast)
 
         if not res_set_zastr:
@@ -151,5 +147,4 @@ class JobFilter:
 
         res_apply_filter = self.loop_apply_filter()
 
-
-        print()
+        return res_apply_filter

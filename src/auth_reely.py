@@ -147,7 +147,7 @@ class AuthRelly:
             res_auth = self.check_auth()
 
             if not res_auth:
-                print(f'Вход выполнен, требуется авторизация. Начинаю...')
+                print(f'Вход выполнен, проверяю авторизацию. Начинаю...')
                 res_auth = self.start_auth()
 
                 time.sleep(3)

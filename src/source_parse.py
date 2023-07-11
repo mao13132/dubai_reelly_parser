@@ -1,6 +1,7 @@
 from src.auth_reely import AuthRelly
 from src.job_filter import JobFilter
 from src.load_page import LoadPage
+from src.scrap_all_ads import ScrapAllAds
 
 
 class SourceParse:
@@ -11,7 +12,7 @@ class SourceParse:
 
         self.url = 'https://soft.reelly.io/'
 
-    def start_pars(self):
+    def start_pars(self, zast):
 
         result_start_page = LoadPage(self.driver, self.url).loop_load_page()
 
@@ -25,11 +26,13 @@ class SourceParse:
 
         print(f'Вход успешно выполнен. Вход авторизирован')
 
-        zast = 'Emaar'
         res_set_filter = JobFilter(self.driver).set_filter(zast)
 
         if not res_set_filter:
             return False
 
-        print()
-        return True
+        print(f'Выставил фильтр. Начинаю парсить предложения')
+
+        all_ads_data = ScrapAllAds(self.driver, 0).start_all_scrap()
+
+        return all_ads_data
