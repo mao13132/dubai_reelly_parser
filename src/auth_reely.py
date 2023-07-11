@@ -1,3 +1,5 @@
+import time
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -9,6 +11,8 @@ class AuthRelly:
     def __init__(self, driver):
         self.driver = driver
         self.source_name = 'reelly'
+
+
 
     def write_login(self):
         try:
@@ -111,3 +115,47 @@ class AuthRelly:
         print(f'Ввёл данные авторизации вхожу')
 
         return True
+
+    def check_auth(self):
+        # time.sleep(1)
+        try:
+            """Первая проверка на авторизацию"""
+            self.driver.find_element(by=By.XPATH, value=f"//*[contains(@wized, 'LogoutButton')]")
+
+        except:
+
+            return False
+
+        try:
+            """Вторая проверка на авторизацию"""
+            name = self.driver.find_element(by=By.XPATH, value=f"//*[contains(@wized, 'userName')]").text
+
+            if 'urname' in name:
+                return False
+
+        except:
+            return False
+
+        return True
+
+    def loop_auth(self):
+        cont = 0
+        while True:
+            cont += 1
+            if cont > 4:
+                return False
+
+            res_auth = self.check_auth()
+
+            if not res_auth:
+                print(f'Вход выполнен, требуется авторизация. Начинаю...')
+                res_auth = self.start_auth()
+                # res_auth = AuthRelly(self.driver).start_auth()
+
+                time.sleep(3)
+
+                if not res_auth:
+                    continue
+
+            else:
+                return True
