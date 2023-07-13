@@ -23,35 +23,32 @@ class SourceParse:
 
     def start_pars(self):
 
-        result_start_page = LoadPage(self.driver, self.url).loop_load_page(f"//*[contains(@class, 'clear')]")
+        for post in self.post_dict:
 
-        if not result_start_page:
-            return False
 
-        res_auth = AuthWP(self.driver).loop_auth()
+            result_start_page = LoadPage(self.driver, self.url).loop_load_page(f"//*[contains(@class, 'clear')]")
 
-        if not res_auth:
-            return False
+            if not result_start_page:
+                continue
 
-        print(f'Вход успешно выполнен. Вход авторизирован')
+            res_auth = AuthWP(self.driver).loop_auth()
 
-        res_set_filter = WpAddPost(self.driver, self.post_dict).start_add()
+            if not res_auth:
+                continue
 
-        if not res_set_filter:
-            return False
+            res_add_post = WpAddPost(self.driver, self.post_dict).start_add(post)
 
-        print(f'Выставил фильтр. Начинаю парсить предложения')
+            if not res_add_post:
+                continue
 
-        all_ads_data = ScrapAllAds(self.driver, 0).start_all_scrap()
-
-        return all_ads_data
+        return True
 
 if __name__ == '__main__':
     from browser.createbrowser import CreatBrowser
     from src.temp_good import ower_good_data
 
-
     browser_core = CreatBrowser()
+
     res = SourceParse(browser_core.driver, ower_good_data[:5]).start_pars()
 
     print()
