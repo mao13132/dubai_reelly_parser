@@ -5,6 +5,8 @@ from src.plu_parse import PluParser
 from src.source_parse import SourceParse
 
 
+from sql.bot_connector import BotDB
+
 def main():
     browser_core = CreatBrowser()
 
@@ -16,7 +18,11 @@ def main():
 
         print(f'Собрал {len(data_good)} plu')
 
-        ower_good_data = PluParser(browser_core.driver, data_good).start_pars()
+        ower_good_data = PluParser(browser_core.driver, data_good, BotDB).start_pars()
+
+        # from src.temp_good import ower_good_data
+
+
 
         print()
 

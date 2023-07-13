@@ -14,7 +14,7 @@ class SourceParse:
 
     def start_pars(self, zast):
 
-        result_start_page = LoadPage(self.driver, self.url).loop_load_page()
+        result_start_page = LoadPage(self.driver, self.url).loop_load_page("//*[contains(@class, 'body')]")
 
         if not result_start_page:
             return False

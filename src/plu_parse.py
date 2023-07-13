@@ -5,13 +5,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from src.crop_img import get_image_maps
+
 
 class PluParser:
-    def __init__(self, driver, links_post):
+    def __init__(self, driver, links_post, BotDB):
         self.driver = driver
         self.links_post = links_post
         self.post_data = {}
         self.all_xarakt = []
+        self.BotDB = BotDB
 
     def load_page(self, url):
         try:
@@ -105,6 +108,181 @@ class PluParser:
 
         return text
 
+    def get_map(self):
+        try:
+            _frame = self.driver.find_element(by=By.XPATH, value=f"//div[contains(@wized, 'locationBlockProject')]"
+                                                                 f"//iframe").screenshot_as_base64
+        except:
+            return ''
+
+        return _frame
+
+    def get_all_apartaments(self):
+        try:
+            apartaments = self.driver.find_elements(by=By.XPATH, value=f"//*[contains(@wized, 'unitsBlockProject')]"
+                                                                       f"//*[contains(@class, 'typical')]"
+                                                                       f"//*[contains(@wized, 'unitCard')]")
+        except:
+            return ''
+
+        return apartaments
+
+    def get_photo_apart(self, row):
+        try:
+            photo_apart = row.find_element(by=By.XPATH, value=f".//img").get_attribute('src')
+        except:
+            photo_apart = ''
+
+        return photo_apart
+
+    def get_bedroom(self, row):
+        try:
+            bedroom = row.find_element(by=By.XPATH, value=f".//*[contains(@wized, 'unitType')]").text
+        except:
+            bedroom = ''
+
+        return bedroom
+
+    def get_aed_price(self, row):
+        count = 0
+        while True:
+            count += 1
+            if count > 5:
+                return False
+
+            try:
+                usd = row.find_element(by=By.XPATH, value=f".//*[contains(@wized, 'priceRangeAED')]").text
+            except:
+                usd = ''
+
+            if usd == '':
+                try:
+                    row.find_element(by=By.XPATH, value=f"//*[contains(@wized, 'currencyAed')]").click()
+                except:
+                    continue
+
+                continue
+
+            return usd
+
+    def get_usd_price(self, row):
+        count = 0
+        while True:
+            count += 1
+            if count > 5:
+                return False
+
+            try:
+                usd = row.find_element(by=By.XPATH, value=f".//*[contains(@wized, 'priceRangeUSD')]").text
+            except:
+                usd = ''
+
+            if usd == '':
+                try:
+                    row.find_element(by=By.XPATH, value=f"//*[contains(@wized, 'currencyUsd')]").click()
+                except:
+                    continue
+
+                continue
+
+            return usd
+
+    def get_m2(self, row):
+        count = 0
+        while True:
+            count += 1
+            if count > 5:
+                return False
+
+            try:
+                m2 = row.find_element(by=By.XPATH, value=f".//*[contains(@wized, 'sqmAreaBox')]").text
+            except:
+                m2 = ''
+
+            if m2 == '':
+                try:
+                    row.find_element(by=By.XPATH, value=f"//*[contains(@wized, 'metricSystem')]").click()
+                except:
+                    continue
+
+                continue
+
+            return m2
+
+    def get_sqft(self, row):
+        count = 0
+        while True:
+            count += 1
+            if count > 5:
+                return False
+
+            try:
+                sqft = row.find_element(by=By.XPATH, value=f".//*[contains(@wized, 'sqftAreaBox')]").text
+            except:
+                sqft = ''
+
+            if sqft == '':
+                try:
+                    row.find_element(by=By.XPATH, value=f"//*[contains(@wized, 'footSystem')]").click()
+                except:
+                    continue
+
+                continue
+
+            return sqft
+
+    def scroll_to_page_aparts(self):
+        try:
+            test = self.driver.find_element(by=By.XPATH, value=f"//*[contains(@class,'units-block-title')]")
+            self.driver.execute_script('arguments[0].scrollIntoView(true);', test)
+        except:
+            self.driver.execute_script("scrollTo(0,4600)")
+
+    def get_all_photo(self, row):
+        return self.get_photo_apart(row)
+
+    def get_all_bedroom(self, row):
+        return self.get_bedroom(row)
+
+    def itter_apartoments(self, list_apartaments):
+
+        apart_list = [{"row": x} for x in list_apartaments]
+
+        self.scroll_to_page_aparts()
+
+        for row in apart_list:
+            row['photo'] = self.get_all_photo(row['row'])
+            row['bedroom'] = self.get_all_bedroom(row['row'])
+
+        for row in apart_list:
+            row['aed_price'] = self.get_aed_price(row['row'])
+
+        for row in apart_list:
+            row['sqft'] = self.get_sqft(row['row'])
+
+        for row in apart_list:
+            row['usd_price'] = self.get_usd_price(row['row'])
+
+        for row in apart_list:
+            row['m2'] = self.get_m2(row['row'])
+
+        for row in apart_list:
+            del row['row']
+
+        return apart_list
+
+    def get_apartaments(self):
+        all_apartaments = self.get_all_apartaments()
+
+        if all_apartaments == []:
+            return []
+
+        apartaments_data = self.itter_apartoments(all_apartaments)
+
+        # print()
+
+        return apartaments_data
+
     def get_map_point(self):
         try:
             point_ = self.driver.find_elements(by=By.XPATH, value=f"//*[contains(@class, 'map-point-with-stripe')]"
@@ -197,6 +375,9 @@ class PluParser:
         good_over_count = 0
 
         for count, post in enumerate(self.links_post):
+            status_update_post = False
+            exist_db = False
+
             if post['link'] == '':
                 continue
 
@@ -220,6 +401,10 @@ class PluParser:
 
             post['point'] = self.get_map_point()
 
+            post['apartaments'] = self.get_apartaments()
+
+            post['maps'] = self.get_map()
+
             post['cords'] = self.get_coords()
 
             if count % 5 == 0 and count != 0:
@@ -227,10 +412,24 @@ class PluParser:
 
             good_over_count += 1
 
+            res_check_sql = self.BotDB.exist_plu(post['link'])
+
+            if res_check_sql == []:
+                self.BotDB.add_plu(post['link'], post['name'], post['area'], post['devel'], post['date'], post['text'])
+            else:
+                status_update_post = self.BotDB.update_check(post['link'], post['name'], post['area'], post['devel'],
+                                                             post['date'], post['text'])
+                exist_db = True
+
+            post['status_update'] = status_update_post
+            post['exist_db'] = exist_db
+
+            if count == 3:
+                # TODO убрать
+                return self.links_post
+
+            # TODO сохранение в DB
+
         print(f'Итог: собрал информацию с {len(self.links_post)} PLU')
 
-        result_dict = {}
-        result_dict['name_colums'] = self.all_xarakt
-        result_dict['result'] = self.links_post
-
-        return result_dict
+        return self.links_post

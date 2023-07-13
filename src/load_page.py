@@ -8,7 +8,7 @@ class LoadPage:
     def __init__(self, driver, url):
         self.url = url
         self.driver = driver
-        self.source_name = 'reelly'
+        self.source_name = 'expertproperty'
 
     def load_page(self, url):
         try:
@@ -20,15 +20,15 @@ class LoadPage:
             print(f'Ошибка при заходе на стартовую страницу "{es}"')
             return False
 
-    def __check_load_page(self):
+    def __check_load_page(self, _xpatch):
         try:
             WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located((By.XPATH, "//*[contains(@class, 'body')]")))
+                EC.presence_of_element_located((By.XPATH, _xpatch)))
             return True
         except:
             return False
 
-    def loop_load_page(self):
+    def loop_load_page(self, _xpatch):
         count = 0
         count_ower = 5
 
@@ -47,7 +47,7 @@ class LoadPage:
             if not start_page:
                 continue
 
-            check_page = self.__check_load_page()
+            check_page = self.__check_load_page(_xpatch)
 
             if not check_page:
                 self.driver.refresh()
