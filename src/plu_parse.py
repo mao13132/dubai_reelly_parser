@@ -1,10 +1,13 @@
+import os
 import time
 from datetime import datetime
 
+from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from save_img import check_dirs
 from src.crop_img import get_image_maps
 
 
@@ -21,6 +24,8 @@ class PluParser:
 
             self.driver.get(url)
             return True
+        except TimeoutException:
+            return False
         except Exception as es:
             print(f'Ошибка при заходе на "{url}" "{es}"')
             return False
@@ -108,12 +113,28 @@ class PluParser:
 
         return text
 
-    def get_map(self):
+    def get_map(self, name):
+
+
         try:
             _frame = self.driver.find_element(by=By.XPATH, value=f"//div[contains(@wized, 'locationBlockProject')]"
-                                                                 f"//iframe").screenshot_as_base64
+                                                                 f"//iframe")
         except:
-            return ''
+            return False
+
+        name = f"{os.getcwd()}\\files\\maps\\{name}.jpg"
+
+        with open(name, "wb") as elem_file:
+            elem_file.write(_frame.screenshot_as_png)
+
+        return name
+
+
+        # try:
+        #     _frame = self.driver.find_element(by=By.XPATH, value=f"//div[contains(@wized, 'locationBlockProject')]"
+        #                                                          f"//iframe").screenshot_as_base64
+        # except:
+        #     return ''
 
         return _frame
 
@@ -371,10 +392,13 @@ class PluParser:
         return link_maps
 
     def start_pars(self):
-
+        print(f'Начинаю парсинг предложений')
         good_over_count = 0
 
-        for count, post in enumerate(self.links_post):
+        for count, post in enumerate(self.links_post[:2]):
+
+            print(f'Начинаю обработку {post["name"]}')
+
             status_update_post = False
             exist_db = False
 
@@ -403,7 +427,9 @@ class PluParser:
 
             post['apartaments'] = self.get_apartaments()
 
-            post['maps'] = self.get_map()
+            check_dirs('maps')
+
+            post['maps'] = self.get_map(post["name"])
 
             post['cords'] = self.get_coords()
 

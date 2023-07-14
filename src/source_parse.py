@@ -13,7 +13,7 @@ class SourceParse:
         self.url = 'https://soft.reelly.io/'
 
     def start_pars(self, zast):
-
+        print(f'Начинаю вход на reelly')
         result_start_page = LoadPage(self.driver, self.url).loop_load_page("//*[contains(@class, 'body')]")
 
         if not result_start_page:
@@ -31,7 +31,7 @@ class SourceParse:
         if not res_set_filter:
             return False
 
-        print(f'Выставил фильтр. Начинаю парсить предложения')
+        print(f'Выставил фильтр "{zast}". Начинаю парсить предложения')
 
         all_ads_data = ScrapAllAds(self.driver, 0).start_all_scrap()
 

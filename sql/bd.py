@@ -34,6 +34,7 @@ class BotDB:
                                 f"devel TEXT,"
                                 f"date TEXT,"
                                 f"text TEXT,"
+                                f"link_wp TEXT,"
                                 f"other TEXT)")
         except Exception as es:
             print(f'SQL исключение check_table имя таблицы{es}')
@@ -61,9 +62,20 @@ class BotDB:
 
         return True
 
+    def insert_publish_links(self, link, link_wp):
+        try:
+            self.cursor.execute(f"UPDATE plu SET link_wp='{link_wp}' WHERE link='{link}'")
+            self.conn.commit()
+        except Exception as es:
+            print(f'SQL ошибка! Не смог insert_publish_links в DB "{es}"')
+
+            return False
+
+        return True
+
     def update_sql(self, id_pk, link, name, area, devel, date, text):
         try:
-            self.cursor.execute(f"UPDATE plu SET link='{link}', name='{name}', area='{area}', devel='{devel}',"
+            self.cursor.execute(f"UPDATE plu SET link='{link}', name='{name[:100]}', area='{area}', devel='{devel}',"
                                 f" date='{date}', text='{text[:100]}' WHERE id_pk='{id_pk}'")
             self.conn.commit()
         except Exception as es:
@@ -89,7 +101,7 @@ class BotDB:
 
             return False
 
-        if name[:100] != name_sql or area != area_sql or devel != devel_sql or date != date_sql or text != text_sql:
+        if name[:100] != name_sql or area != area_sql or devel != devel_sql or date != date_sql or text[:100] != text_sql:
             print(f'Надо обновить')
             self.update_sql(id_pk, link, name, area, devel, date, text)
 

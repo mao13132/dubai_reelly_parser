@@ -11,21 +11,31 @@ from src.load_page import LoadPage
 from src.wp_add_post import WpAddPost
 
 
-class SourceParse:
-    def __init__(self, driver, post_dict):
+class WpStart:
+    def __init__(self, driver, BotDB, post_dict):
         self.driver = driver
         self.source_name = 'expertproperty'
         self.links_post = []
         self.post_dict = post_dict
+        self.BotDB = BotDB
 
         self.url = 'https://expertproperty.ae/wp-admin/post-new.php?post_type=estate'
 
-
     def start_pars(self):
-
+        print(f'Начинаю добавление постов на WP')
         for post in self.post_dict:
 
+            if post['exist_db'] and not post['status_update']:
+                """Нет изменений пропускаю пост"""
+                continue
 
+            if post['exist_db'] and post['status_update']:
+                """refresh"""
+                print('_____refresh_____')
+                continue
+
+
+            # TODO фильтр старый новый
             result_start_page = LoadPage(self.driver, self.url).loop_load_page(f"//*[contains(@class, 'clear')]")
 
             if not result_start_page:
@@ -36,19 +46,21 @@ class SourceParse:
             if not res_auth:
                 continue
 
-            res_add_post = WpAddPost(self.driver, self.post_dict).start_add(post)
+            res_add_post = WpAddPost(self.driver, self.BotDB, self.post_dict).start_add(post)
 
             if not res_add_post:
                 continue
 
         return True
 
+
 if __name__ == '__main__':
     from browser.createbrowser import CreatBrowser
     from src.temp_good import ower_good_data
 
     browser_core = CreatBrowser()
+    from sql.bot_connector import BotDB
 
-    res = SourceParse(browser_core.driver, ower_good_data[:5]).start_pars()
+    res = WpStart(browser_core.driver, BotDB, ower_good_data[:5]).start_pars()
 
     print()

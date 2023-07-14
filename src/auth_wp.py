@@ -10,7 +10,7 @@ from src.settings import LOGIN, PASSWORD, LOGIN_WP, PASSWORD_WP
 class AuthWP:
     def __init__(self, driver):
         self.driver = driver
-        self.source_name = 'reelly'
+        self.source_name = 'WP'
 
     def write_login(self):
         try:
