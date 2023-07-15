@@ -19,7 +19,7 @@ def main():
             data_good = SourceParse(browser_core.driver).start_pars(filter)
             # from src.temp import data_list as data_good
 
-            print(f'Собрал {len(data_good)} plu по фильтру {filter}')
+            print(f'--- Собрал {len(data_good)} plu по фильтру {filter}')
 
             ower_good_data = PluParser(browser_core.driver, data_good, BotDB).start_pars()
             #

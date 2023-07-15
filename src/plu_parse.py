@@ -395,7 +395,7 @@ class PluParser:
         print(f'Начинаю парсинг предложений')
         good_over_count = 0
 
-        for count, post in enumerate(self.links_post[:2]):
+        for count, post in enumerate(self.links_post):
 
             print(f'Начинаю обработку {post["name"]}')
 
@@ -450,9 +450,6 @@ class PluParser:
             post['status_update'] = status_update_post
             post['exist_db'] = exist_db
 
-            if count == 3:
-                # TODO убрать
-                return self.links_post
 
             # TODO сохранение в DB
 

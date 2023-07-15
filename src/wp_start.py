@@ -24,6 +24,10 @@ class WpStart:
     def start_pars(self):
         print(f'Начинаю добавление постов на WP')
         for post in self.post_dict:
+            try:
+                post['exist_db']
+            except:
+                continue
 
             if post['exist_db'] and not post['status_update']:
                 """Нет изменений пропускаю пост"""
