@@ -45,9 +45,12 @@ def save_images(images_list):
 
         name_img = downloads_image(image, file_name)
 
+        if name_img is None:
+            continue
+
         if name_img:
             good_files.append(file_name)
 
-    print()
+    # print()
 
     return good_files

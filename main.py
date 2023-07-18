@@ -10,12 +10,10 @@ from src.wp_start import WpStart
 
 
 def main():
-
     browser_core = CreatBrowser()
 
     try:
         for filter in FILTER_LIST:
-
             data_good = SourceParse(browser_core.driver).start_pars(filter)
             # from src.temp import data_list as data_good
 
@@ -25,7 +23,7 @@ def main():
             #
             # from src.temp_good import ower_good_data
 
-            res = WpStart(browser_core.driver, BotDB, ower_good_data).start_pars()
+            res = WpStart(browser_core.driver, BotDB, ower_good_data[:1]).start_pars()
 
             print()
 

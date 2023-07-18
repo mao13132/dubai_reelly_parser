@@ -22,7 +22,7 @@ class CreatBrowser:
         options.add_argument("no-sandbox")
         options.add_argument("--remote-debugging-port=9222")
 
-        options.add_argument("--headless")
+        # options.add_argument("--headless")
         options.add_argument("window-size=1920,939")
 
         path_dir = (f'C:\\Users\\{self.windowsUser}\\AppData\\Local\\Google\\Chrome\\User Data\\Dubai11')
