@@ -25,7 +25,7 @@ def main():
             #
             # from src.temp_good import ower_good_data
 
-            res = WpStart(browser_core.driver, BotDB, ower_good_data[:1]).start_pars()
+            res = WpStart(browser_core.driver, BotDB, ower_good_data).start_pars()
 
             print()
 

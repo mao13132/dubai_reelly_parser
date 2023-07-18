@@ -17,7 +17,7 @@ class LoadPage:
         except TimeoutException:
             return False
         except Exception as es:
-            print(f'Ошибка при заходе на стартовую страницу "{es}"')
+            # print(f'Ошибка при заходе на стартовую страницу "{es}"')
             return False
 
     def __check_load_page(self, _xpatch):
@@ -30,7 +30,7 @@ class LoadPage:
 
     def loop_load_page(self, _xpatch):
         count = 0
-        count_ower = 5
+        count_ower = 10
 
         self.driver.set_page_load_timeout(15)
 

@@ -187,10 +187,21 @@ class WpAddPost:
             except:
                 return True
 
+    def check_load_modal_image(self):
+        try:
+            WebDriverWait(self.driver, 25).until(
+                EC.presence_of_element_located((By.XPATH, f"//*[contains(@class, 'hide-menu')]")))
+            return True
+        except Exception as es:
+            print(f'Ошибка при загрузке окна изображений "{es}"')
+            return False
+
     def insert_image(self, images_list):
 
         res_add_images = self.click_button('Добавить изображения')
-        time.sleep(0.5)
+
+        self.check_load_modal_image()
+
         res_add_images = self.click_button('Загрузить файлы')
 
         res_insert = self._insert_image(images_list)
@@ -212,6 +223,16 @@ class WpAddPost:
 
         return True
 
+    def click_add_big_images(self):
+        try:
+            self.driver.find_element(by=By.XPATH,
+                                     value=f"//*[contains(@class, 'navigable')]"
+                                           f"//button[contains(@class, 'image')]").click()
+        except:
+            return False
+
+        return True
+
     def click_add_images_3_window(self, xpatch):
         try:
             self.driver.find_element(by=By.XPATH,
@@ -224,7 +245,9 @@ class WpAddPost:
     def insert_image2(self, images_list):
 
         res_add_images = self.click_add_images_2_window()
-        time.sleep(0.5)
+
+        self.check_load_modal_image()
+
         res_add_images = self.click_button('Загрузить файлы')
 
         res_insert = self._insert_image(images_list)
@@ -235,11 +258,40 @@ class WpAddPost:
 
         return True
 
+    def clic_nav_panel_nedviga(self):
+        try:
+            self.driver.find_element(by=By.XPATH,
+                                     value=f"//button[contains(text(), 'едвижимость')]").click()
+        except:
+            pass
+
+    def insert_big_image(self, images_list):
+
+        self.clic_nav_panel_nedviga()
+
+        res_add_images = self.click_add_big_images()
+
+        self.check_load_modal_image()
+
+        res_add_images = self.click_button('Загрузить файлы')
+
+        res_insert = self._insert_image(images_list)
+
+        res_wait_load = self.check_full_load()
+
+        res_finish_button = self.click_button_universal(f"//*[contains(@class, 'search-form')]"
+                                                        f"//*[contains(text(), 'Установить')]")
+        # res_finish_button = self.click_button('Выбрать')
+
+        return True
+
     def insert_image_universal(self, images_list, _id):
 
         res_add_images = self.click_add_images_3_window(f"//*[contains(@class, '{_id}')]"
                                                         f"//*[contains(@class, 'button')]")
-        time.sleep(0.5)
+
+        self.check_load_modal_image()
+
         res_add_images = self.click_button('Загрузить файлы')
 
         res_insert = self._insert_image(images_list)
@@ -291,7 +343,9 @@ class WpAddPost:
 
         images_list = save_images(post['image'])
 
-        res_insert_images = self.insert_image(images_list[:5])
+        res_insert_big_image = self.insert_big_image(images_list[:1])
+
+        res_insert_images = self.insert_image(images_list)
 
         res_click_gallery = self.click_razdel('Контент на ')
 
@@ -299,7 +353,7 @@ class WpAddPost:
 
         res_write_sdacha = self.write_value('Сдача', post['date'])
 
-        res_write = self.write_text_in_frame('Тест окно 3 первый текст', '56')
+        res_write = self.write_text_in_frame(post['video'], '56')
 
         self.scroll_to_button(f"(//a[contains(text(), 'Добавить изображения')])[2]")
 
