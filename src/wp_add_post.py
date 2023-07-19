@@ -510,7 +510,7 @@ class WpAddPost:
 
         self.scroll_to_button(f"(//a[contains(text(), 'Добавить изображения')])[2]")
 
-        res_insert_images = self.insert_image2(images_list[:2])
+        # res_insert_images = self.insert_image2(images_list[:2])
 
         res_click_section = self.click_section(0)
 
@@ -518,16 +518,16 @@ class WpAddPost:
 
         self.scroll_to_button(f"(//*[contains(text(),'Добавить изобр')])[2]")
 
-        res_write_header_sec1 = self.write_header(f"//input[contains(@id, '64834ca4a4d00')]",
-                                                  'Тестовый заголовок Секции 1')
+        # res_write_header_sec1 = self.write_header(f"//input[contains(@id, '64834ca4a4d00')]",
+        #                                           'Тестовый заголовок Секции 1')
 
-        res_image_3 = self.insert_image_universal(images_list[:1], '64834a9f3f937')
+        # res_image_3 = self.insert_image_universal(images_list[:1], '64834a9f3f937')
 
         post['text'] = self.translate(post['text'])
 
         res_write_se11 = self.write_text_in_frame(post['text'], '59')
 
-        res_image_4 = self.insert_image_universal(images_list[1:2], '64834acd3f939')
+        # res_image_4 = self.insert_image_universal(images_list[1:2], '64834acd3f939')
 
         self.scroll_to_button(f"(//*[contains(text(), 'Добавить медиафайл')])[3]")
 

@@ -22,10 +22,10 @@ class CreatBrowser:
         options.add_argument("no-sandbox")
         options.add_argument("--remote-debugging-port=9222")
 
-        # options.add_argument("--headless")
+        options.add_argument("--headless")
         options.add_argument("window-size=1920,939")
 
-        path_dir = (f'C:\\Users\\{self.windowsUser}\\AppData\\Local\\Google\\Chrome\\User Data\\Dubai11')
+        path_dir = (f'C:\\Users\\{self.windowsUser}\\AppData\\Local\\Google\\Chrome\\User Data\\Dubai22')
         options.add_argument(f"user-data-dir={path_dir}")  # Path to your chrome profile
 
         options.add_argument('--disable-dev-shm-usage')

@@ -395,7 +395,7 @@ class PluParser:
         print(f'Начинаю парсинг предложений')
         good_over_count = 0
 
-        for count, post in enumerate(self.links_post[:1]):
+        for count, post in enumerate(self.links_post):
 
             print(f'Начинаю обработку {post["name"]}')
 
