@@ -531,7 +531,9 @@ class WpAddPost:
 
         self.scroll_to_button(f"(//*[contains(text(), 'Добавить медиафайл')])[3]")
 
-        res_write_se12 = self.write_text_in_frame(post['video'], '60')
+        # res_write_se12 = self.write_text_in_frame(post['video'], '60')
+        res_write_header_sec1 = self.write_header(f"//input[contains(@id, '64834ad03f93')]",
+                                                  post['video'])
 
         res_click_section = self.click_section(1)
 
@@ -561,5 +563,7 @@ class WpAddPost:
         self.BotDB.insert_publish_links(post['link'], url_wp)
 
         time.sleep(0.5)
+
+        print(f'Опубликовал "{url_wp}"')
 
         return True

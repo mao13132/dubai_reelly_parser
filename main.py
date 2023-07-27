@@ -20,7 +20,7 @@ def main():
             print(f'--- Собрал {len(data_good)} plu по фильтру {filter}')
 
             ower_good_data = PluParser(browser_core.driver, data_good, BotDB).start_pars()
-            #
+
             # from src.temp_good import ower_good_data
 
             res = WpStart(browser_core.driver, BotDB, ower_good_data).start_pars()
