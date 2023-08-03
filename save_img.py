@@ -51,6 +51,4 @@ def save_images(images_list):
         if name_img:
             good_files.append(file_name)
 
-    # print()
-
     return good_files

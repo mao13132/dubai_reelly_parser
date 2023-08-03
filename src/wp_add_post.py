@@ -1,4 +1,3 @@
-import os
 import time
 
 from selenium.webdriver.common.by import By
@@ -11,6 +10,8 @@ from deep_translator import GoogleTranslator
 
 
 class WpAddPost:
+    """TG @developer_telegrams"""
+
     def __init__(self, driver, BotDB, post_dict):
         self.driver = driver
         self.source_name = 'WP'
@@ -233,17 +234,14 @@ class WpAddPost:
             time.sleep(0.5)
 
             buttons = self.driver.find_elements(by=By.XPATH,
-                                               value=f"//*[contains(@class, 'search-form')]"
-                                                     f"//*[contains(text(), 'Выбрать')]")
+                                                value=f"//*[contains(@class, 'search-form')]"
+                                                      f"//*[contains(text(), 'Выбрать')]")
 
             for button in buttons:
                 try:
                     button.click()
                 except:
                     continue
-
-
-
 
     def insert_image(self, images_list):
 
@@ -258,7 +256,6 @@ class WpAddPost:
         res_wait_load = self.check_full_load()
 
         res_finish_button = self.loop_close_window()
-        # res_finish_button = self.click_button('Выбрать')
 
         return True
 
@@ -354,22 +351,29 @@ class WpAddPost:
         return True
 
     def write_text_in_frame(self, value, _id):
+        one_version = True
         try:
             _frame = self.driver.find_element(by=By.XPATH,
                                               value=f"//iframe[contains(@id, '{_id}')]")
-            # _frame = self.driver.find_element(by=By.XPATH,
-            #                                   value=f"//*[contains(@id, 'mceu_92')]/iframe")
         except:
-            return False
+            try:
+                one_version = False
+                _frame = self.driver.find_element(by=By.XPATH,
+                                                  value=f"//*[contains(@id, '{_id}')]//textarea").send_keys(value)
+                return True
+            except:
+                return False
 
-        self.driver.switch_to.frame(_frame)
-        try:
-            test = self.driver.find_element(by=By.XPATH,
-                                            value=f"//body[contains(@id, 'tinymce')]/p").send_keys(value)
-        except:
+        if one_version:
+
+            self.driver.switch_to.frame(_frame)
+            try:
+                test = self.driver.find_element(by=By.XPATH,
+                                                value=f"//body[contains(@id, 'tinymce')]/p").send_keys(value)
+            except:
+                self.driver.switch_to.default_content()
+                return False
             self.driver.switch_to.default_content()
-            return False
-        self.driver.switch_to.default_content()
 
         return True
 
@@ -406,6 +410,8 @@ class WpAddPost:
 
     def add_image_room(self, count, image_list):
 
+        print(f'Добавляю квартиры')
+
         images_ = save_images([image_list])
 
         if images_ == []:
@@ -432,7 +438,13 @@ class WpAddPost:
                                                value=f"(//*[contains(@class, '64b681313db86')]//tr)[{count_room}]"
                                                      f"//iframe")[count_frame]
         except:
-            return False
+            try:
+                _frame = self.driver.find_elements(by=By.XPATH,
+                                                   value=f"(//*[contains(@class, '64b681313db86')]//tr)[{count_room}]"
+                                                         f"//textarea")[count_frame].send_keys(value)
+                return True
+            except:
+                return False
 
         self.driver.switch_to.frame(_frame)
         try:
@@ -451,9 +463,9 @@ class WpAddPost:
         for count, room in enumerate(rooms):
             count += 1
             self.click_add_section()
-
+            time.sleep(1)
             self.click_room_section(count)
-
+            time.sleep(1)
             res_add_foto = self.add_image_room(count, room['photo'])
 
             res_write_frame1 = self.write_text_in_frame_rooms(room['bedroom'], count, 0)
@@ -476,11 +488,15 @@ class WpAddPost:
         return True
 
     def start_add(self, post):
+
+        print(f'{post["name"]} - обработка')
+
         res_insert_villa = self.click_type_villa()
-        # print(f'Выбрал виллу')
 
         res_write_raion = self.write_value('Город', 'Дубай')
+
         res_write_raion = self.write_value('Район', post['area'])
+
         res_write_raion = self.write_value('Цена', post['price'])
 
         yer_over = self.formated_over_date(post['date'])
@@ -489,9 +505,8 @@ class WpAddPost:
 
         res_writ_h1 = self.write_h1(post['name'])
 
-        # res_writ_h2 = self.write_h2('H2')
-
         res_click_gallery = self.click_razdel('Галерея')
+
         self.scroll_to_button(f"//*[contains(text(),'Добавить изобр')]")
 
         images_list = save_images(post['image'])
@@ -506,11 +521,7 @@ class WpAddPost:
 
         res_write_sdacha = self.write_value('Сдача', post['date'])
 
-        # res_write = self.write_text_in_frame('блок тестовый 1', '58')
-
         self.scroll_to_button(f"(//a[contains(text(), 'Добавить изображения')])[2]")
-
-        # res_insert_images = self.insert_image2(images_list[:2])
 
         res_click_section = self.click_section(0)
 
@@ -518,20 +529,12 @@ class WpAddPost:
 
         self.scroll_to_button(f"(//*[contains(text(),'Добавить изобр')])[2]")
 
-        # res_write_header_sec1 = self.write_header(f"//input[contains(@id, '64834ca4a4d00')]",
-        #                                           'Тестовый заголовок Секции 1')
-
-        # res_image_3 = self.insert_image_universal(images_list[:1], '64834a9f3f937')
-
         post['text'] = self.translate(post['text'])
 
-        res_write_se11 = self.write_text_in_frame(post['text'], '59')
-
-        # res_image_4 = self.insert_image_universal(images_list[1:2], '64834acd3f939')
+        res_write_se11 = self.write_text_in_frame(post['text'], '60')
 
         self.scroll_to_button(f"(//*[contains(text(), 'Добавить медиафайл')])[3]")
 
-        # res_write_se12 = self.write_text_in_frame(post['video'], '60')
         res_write_header_sec1 = self.write_header(f"//input[contains(@id, '64834ad03f93')]",
                                                   post['video'])
 
@@ -541,18 +544,7 @@ class WpAddPost:
         if post['maps']:
             res_image_5 = self.insert_image_universal([post['maps']], '64834b072ed15')
 
-        if post['cords']:
-            res_write_se21 = self.write_text_in_frame(post['cords'], '61')
-        try:
-            points = '\n'.join(f"{x} - {y} km" for x, y in post["point"].items())
-        except:
-            points = ''
-
-        res_write_se22 = self.write_text_in_frame(points, '62')
-
         self.scroll_to_button(f"(//*[contains(text(), 'Добавить медиафайл')])[5]")
-
-        # res_write_se23 = self.write_text_in_frame('Тест окно 3 секция 2-3', '63')
 
         res_add_rooms = self.add_rooms(post['apartaments'])
 

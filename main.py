@@ -10,6 +10,7 @@ from src.wp_start import WpStart
 
 
 def main():
+    """TG @developer_telegrams"""
     browser_core = CreatBrowser()
 
     try:

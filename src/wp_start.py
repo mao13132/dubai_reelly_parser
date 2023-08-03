@@ -12,6 +12,9 @@ from src.wp_add_post import WpAddPost
 
 
 class WpStart:
+
+    """TG @mao13132"""
+
     def __init__(self, driver, BotDB, post_dict):
         self.driver = driver
         self.source_name = 'expertproperty'
@@ -22,8 +25,11 @@ class WpStart:
         self.url = 'https://expertproperty.ae/wp-admin/post-new.php?post_type=estate'
 
     def start_pars(self):
+
+        """TG @developer_telegrams"""
+
         print(f'Начинаю добавление постов на WP')
-        for post in self.post_dict:
+        for count, post in enumerate(self.post_dict):
             try:
                 post['exist_db']
             except:
@@ -50,7 +56,7 @@ class WpStart:
             if not res_auth:
                 continue
 
-            res_add_post = WpAddPost(self.driver, self.BotDB, self.post_dict).start_add(post)
+            res_add_post = WpAddPost(self.driver, self.BotDB, self.post_dict).start_add(f'#{count + 1} {post}')
 
             if not res_add_post:
                 continue

@@ -8,7 +8,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from save_img import check_dirs
-from src.crop_img import get_image_maps
 
 
 class PluParser:
@@ -115,7 +114,6 @@ class PluParser:
 
     def get_map(self, name):
 
-
         try:
             _frame = self.driver.find_element(by=By.XPATH, value=f"//div[contains(@wized, 'locationBlockProject')]"
                                                                  f"//iframe")
@@ -128,15 +126,6 @@ class PluParser:
             elem_file.write(_frame.screenshot_as_png)
 
         return name
-
-
-        # try:
-        #     _frame = self.driver.find_element(by=By.XPATH, value=f"//div[contains(@wized, 'locationBlockProject')]"
-        #                                                          f"//iframe").screenshot_as_base64
-        # except:
-        #     return ''
-
-        return _frame
 
     def get_all_apartaments(self):
         try:
@@ -300,8 +289,6 @@ class PluParser:
 
         apartaments_data = self.itter_apartoments(all_apartaments)
 
-        # print()
-
         return apartaments_data
 
     def get_map_point(self):
@@ -415,8 +402,6 @@ class PluParser:
             if not full_load:
                 print(f'Не смог полностью загрузить страницу')
 
-            # gallery_list = self.get_gallery_list()
-
             post['image'] = self.get_images()
 
             post['video'] = self.get_video()
@@ -449,7 +434,6 @@ class PluParser:
 
             post['status_update'] = status_update_post
             post['exist_db'] = exist_db
-
 
             # TODO сохранение в DB
 
