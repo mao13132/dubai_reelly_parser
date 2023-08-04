@@ -231,7 +231,7 @@ class WpAddPost:
             if res_close_windows:
                 return True
 
-            time.sleep(0.5)
+            time.sleep(2)
 
             buttons = self.driver.find_elements(by=By.XPATH,
                                                 value=f"//*[contains(@class, 'search-form')]"
@@ -240,6 +240,7 @@ class WpAddPost:
             for button in buttons:
                 try:
                     button.click()
+                    time.sleep(1)
                 except:
                     continue
 
@@ -515,13 +516,21 @@ class WpAddPost:
 
         res_insert_images = self.insert_image(images_list)
 
+        time.sleep(2)
+
         res_click_gallery = self.click_razdel('Контент на ')
 
         res_write_pri2 = self.write_value2('Цена', f'От {post["price"]} $')
 
+        time.sleep(0.5)
+
         res_write_sdacha = self.write_value('Сдача', post['date'])
 
+        time.sleep(0.5)
+
         self.scroll_to_button(f"(//a[contains(text(), 'Добавить изображения')])[2]")
+
+        time.sleep(0.5)
 
         res_click_section = self.click_section(0)
 

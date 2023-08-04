@@ -56,7 +56,7 @@ class WpStart:
             if not res_auth:
                 continue
 
-            res_add_post = WpAddPost(self.driver, self.BotDB, self.post_dict).start_add(f'#{count + 1} {post}')
+            res_add_post = WpAddPost(self.driver, self.BotDB, self.post_dict).start_add(post)
 
             if not res_add_post:
                 continue
